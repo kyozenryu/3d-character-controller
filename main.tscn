@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=3 uid="uid://c0btdlr0aoqnu"]
+
+[ext_resource type="Texture2D" uid="uid://c0eltdkukk7m7" path="res://grid.png" id="1_bvx7d"]
+[ext_resource type="PackedScene" uid="uid://dhauhrnni66lo" path="res://models/base_model_f/player.tscn" id="2_sxbuj"]
+[ext_resource type="Script" path="res://models/base_model_f/camera_controler.gd" id="3_1ab2v"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_weyq7"]
+albedo_texture = ExtResource("1_bvx7d")
+normal_scale = 1.01
+uv1_scale = Vector3(15, 15, 15)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rsewy"]
+
+[sub_resource type="Sky" id="Sky_yt0bq"]
+sky_material = SubResource("ProceduralSkyMaterial_rsewy")
+
+[sub_resource type="Environment" id="Environment_568fa"]
+background_mode = 2
+sky = SubResource("Sky_yt0bq")
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_irvwm"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+lod_bias = 0.001
+use_collision = true
+size = Vector3(60, 1, 60)
+material = SubResource("StandardMaterial3D_weyq7")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.819152, 0.573576, 0, -0.573576, -0.819152, 0, 5, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_568fa")
+
+[node name="Player" parent="." node_paths=PackedStringArray("camera_controller") instance=ExtResource("2_sxbuj")]
+camera_controller = NodePath("../CameraController")
+
+[node name="CameraController" type="Node3D" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("3_1ab2v")
+player = NodePath("../Player")
+
+[node name="LookAt" type="Node3D" parent="CameraController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -54.7812)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraController"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 2, 0)
+spring_length = 2.5
+margin = 0.1
+
+[node name="Camera3D" type="Camera3D" parent="CameraController/SpringArm3D"]
+transform = Transform3D(1, 3.16356e-08, 5.92472e-09, -3.16356e-08, 0.932229, 0.361869, 5.92472e-09, -0.361869, 0.932229, 0, 0, 1.5)
+attributes = SubResource("CameraAttributesPractical_irvwm")
+current = true
